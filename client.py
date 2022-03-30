@@ -9,7 +9,9 @@ PORT = 9090
 
 class Client:
     def __init__(self, host, port):
+        #socket(): 소켓을 연다
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        #connect(): 통신한 서버의 host와 port에 연결을 시도
         self.sock.connect((host,port))
 
         msg = tkinter.Tk()
@@ -25,6 +27,7 @@ class Client:
 
         gui_thread.start()
         receive_thread.start()
+
 
     def gui_loop(self):
         self.win = tkinter.Tk()
@@ -58,8 +61,10 @@ class Client:
 
     def write(self):
         message = f"{self.nickname}: {self.input_area.get('1.0','end')}"
+        #send(): 연결된 서버나 클라이언트로 데이터를 전송함.
         self.sock.send(message.encode('utf-8'))
         self.input_area.delete('1.0','end')
+
 
     def stop(self):
         self.running = False
@@ -67,9 +72,11 @@ class Client:
         self.sock.close()
         exit(0)
 
+
     def receive(self):
         while self.running:
             try:
+                #recv(): send()가 보내온 데이터를 수신함.
                 message = self.sock.recv(1024).decode('utf-8')
                 if message == 'NICK':
                     self.sock.send(self.nickname.encode('utf-8'))
